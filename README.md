@@ -1,22 +1,21 @@
 ![Logo of the project](./images/logo.sample.png)
 
-# oauth-openid-tutorial
+# control-spotify-playlists
 
-Simple Express server and OAuth 2.0/OpenID tutorial project
+Project based on express-scaffold that will enable a user to fully control their Spotify playlists
 
 ## Setup
 
 Pour ☕️ then clone the repository
 
 ```
-$ npm install
-$ npm start
+$ yarn
 ```
 
 ## Development
 
 ```
-$ npm start
+$ npm run dev:server
 ```
 
 ## Testing

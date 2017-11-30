@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "dev:server": "nodemon --ignore ./sessions"
+    "dev:server": "nodemon --ignore sessions"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
