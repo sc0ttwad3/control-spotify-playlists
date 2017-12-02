@@ -1,3 +1,25 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{title}}</p>
 <p>Your sessionID: {{session}}</p>
+
+<h2>Get Playlists</h2>
+<section class="webapi-usage">
+    <code>
+        GET https://api.spotify.com/v1/users/{user_id}/playlists
+    </code>
+    <code>
+        curl -X GET "https://api.spotify.com/v1/users/wizzler/playlists" -H "Authorization: Bearer {your access token}"
+    </code>
+</section>
+
+<h2>Delete Playlists</h2>
+<section class="">
+    <code>
+        DELETE https://api.spotify.com/v1/users/{owner_id}/playlists/{playlist_id}/followers
+    </code>
+
+    <code>
+        curl -X DELETE "https://api.spotify.com/v1/users/spotify/playlists/65V6djkcVRyOStLd8nza8E/followers" -H "Authorization: Bearer {your access token}"
+    </code>
+</section>
+

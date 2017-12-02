@@ -26,6 +26,9 @@ npm test
 
 ## Documentation
 
+Authorization Scopes needed are: **playlist-modify-public**, **playlist-modify-private**
+
+
 ## Note
 
 This project is still evolving to encompass further refinements and customizations.
