@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
+const querystring = require('querystring')
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
@@ -64,8 +65,8 @@ app.use(session({
 // setup home index router
 
 
-const my_client_id = "28f0498c01864754896a7a9d3dc8fdf0";
-const my_client_secret = "0b68f1b0bf2c47cba8cdde4995c08ba2";
+const client_id = "28f0498c01864754896a7a9d3dc8fdf0";
+const client_secret = "0b68f1b0bf2c47cba8cdde4995c08ba2";
 const redirect_uri = "http://localhost:3000/";
 
 const index = require('./routes/index');
