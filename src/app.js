@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 const session = require('express-session');
 const uuid = require('uuid/v4');
+const moment = require('moment');
 
 const FileStore = require('session-file-store')(session);
 
@@ -41,7 +42,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // no longer needed for express-session to work
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(sassMiddleware({
   src: path.join(__dirname, '../public'),
   dest: path.join(__dirname, '../public'),
@@ -62,9 +63,6 @@ app.use(session({
   saveUninitialized: true
 }))
 
-// setup home index router
-
-
 const client_id = "28f0498c01864754896a7a9d3dc8fdf0";
 const client_secret = "0b68f1b0bf2c47cba8cdde4995c08ba2";
 const redirect_uri = "http://localhost:3000/";
@@ -72,84 +70,11 @@ const redirect_uri = "http://localhost:3000/";
 const index = require('./routes/index');
 app.use('/', index);
 
+const login = require('./routes/login');
+app.use('/login', login);
 
-app.get('/login', (req, res) => {
-  let state = generateRandomString(16);
-  res.cookie(stateKey, state);
-
-  // your application requests authorization
-  let scope = 'playlist-modify-private playlist-modify-public';
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      response_type: 'code',
-      client_id: client_id,
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
-    }));
-  }
-);
-
-app.get('/callback', function(req, res) {
-
-  // your application requests refresh and access tokens
-  // after checking the state parameter
-
-  var code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
-
-  if (state === null || state !== storedState) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
-  } else {
-    res.clearCookie(stateKey);
-    var authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-      },
-      json: true
-    };
-
-    request.post(authOptions, function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        var access_token = body.access_token,
-            refresh_token = body.refresh_token;
-
-        var options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
-        };
-
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          console.log(body);
-        });
-
-        // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
-      } else {
-        res.redirect('/#' +
-          querystring.stringify({
-            error: 'invalid_token'
-          }));
-      }
-    });
-  }
-});
+const callback = require('./routes/callback');
+app.use('/callback', callback);
 
 app.get('/refresh_token', function(req, res) {
 
