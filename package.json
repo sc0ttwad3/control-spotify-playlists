@@ -1,8 +1,9 @@
 {
-  "name": "oauth-openid-tutorial",
+  "name": "control-spotify-playlists",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "lint": "./node_modules/.bin/eslint . ",
     "start": "node .",
     "dev:server": "nodemon --ignore sessions"
   },
@@ -24,7 +25,7 @@
   "main": "index.js",
   "devDependencies": {
     "debug": "^3.1.0",
-    "eslint": "^4.11.0",
+    "eslint": "^4.12.1",
     "node-sass": "^4.6.1",
     "node-sass-middleware": "^0.11.0",
     "nodemon": "^1.12.1"

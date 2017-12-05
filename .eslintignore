@@ -1,0 +1,12 @@
+node_modules
+.git
+build
+static
+lib
+workspace
+UltiSnips
+_coursework
+node_modules
+sessions
+public
+
