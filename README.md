@@ -18,6 +18,10 @@ $ yarn
 $ npm run dev:server
 ```
 
+### Notes
+
+When in development, templates are always loaded from disk. In production, raw files and compiled templates are cached, including partials.
+
 ## Testing
 
 ```

@@ -1,5 +1,5 @@
 const express = require('express');
-const expressHandlebars = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
