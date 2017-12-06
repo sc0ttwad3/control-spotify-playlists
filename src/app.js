@@ -1,4 +1,5 @@
 const express = require('express');
+const expressHandlebars = require('express-handlebars');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -33,9 +34,18 @@ let stateKey = 'spotify_auth_state';
  */
 const app = express();
 
-// view engine setup
+// view engine setupp
+// remplae 'views' with the following
+/*
+app.engine('hbs', expressHandlebars({
+  defaultLayout: 'main',
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  partialsDir: path.join(__dirname, 'views/partials'),
+}));
+*/
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+
 // middleware
 app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -63,6 +73,7 @@ app.use(session({
   saveUninitialized: true
 }))
 
+
 const client_id = "28f0498c01864754896a7a9d3dc8fdf0";
 const client_secret = "0b68f1b0bf2c47cba8cdde4995c08ba2";
 const redirect_uri = "http://localhost:3000/";
@@ -76,7 +87,7 @@ app.use('/login', login);
 const callback = require('./routes/callback');
 app.use('/callback', callback);
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', (req, res) => {
 
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
@@ -90,7 +101,7 @@ app.get('/refresh_token', function(req, res) {
     json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
       res.send({
