@@ -36,15 +36,14 @@ const app = express();
 
 // view engine setupp
 // remplae 'views' with the following
-/*
-app.engine('hbs', expressHandlebars({
+app.engine('hbs', exphbs({
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'views/layouts'),
   partialsDir: path.join(__dirname, 'views/partials'),
 }));
-*/
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'hbs');
 
 // middleware
 app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
