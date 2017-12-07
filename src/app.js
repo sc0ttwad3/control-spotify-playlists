@@ -27,6 +27,22 @@ const generateRandomString = (length) => {
   }
   return text;
 };
+
+/**
+* Obtains parameters from the hash of the URL
+* @return Object
+*/
+const getHashParams = () => {
+ var hashParams = {};
+ var e, r = /([^&;=]+)=?([^&;]*)/g,
+     q = window.location.hash.substring(1);
+ while ( e = r.exec(q)) {
+    hashParams[e[1]] = decodeURIComponent(e[2]);
+ }
+ return hashParams;
+}
+
+
 let stateKey = 'spotify_auth_state';
 
 /***
@@ -80,6 +96,8 @@ const redirect_uri = "http://localhost:3000/";
 const index = require('./routes/index');
 app.use('/', index);
 
+// const login = require('./routes/login');
+// app.use('/login', login);
 app.get('/login', (req, res) => {
   console.log('Inside /login route handler');
 
@@ -99,14 +117,71 @@ app.get('/login', (req, res) => {
     }));
 });
 
-// const login = require('./routes/login');
-// app.use('/login', login);
+// const callback = require('./routes/callback');
+// app.use('/callback', callback);
+app.get('/callback', (req, res) => {
+  console.log('Inside /callback route handler');
 
-const callback = require('./routes/callback');
-app.use('/callback', callback);
+  // your application requests refresh and access tokens
+  // after checking the state parameter
+
+  const code = req.query.code || null;
+  const state = req.query.state || null;
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
+
+  if (state === null || state !== storedState) {
+    res.redirect('/#' +
+      querystring.stringify({
+        error: 'state_mismatch'
+    }));
+  } else {
+    res.clearCookie(stateKey);
+    var authOptions = {
+      url: 'https://accounts.spotify.com/api/token',
+     orm: {
+        code: code,
+        redirect_uri: redirect_uri,
+        grant_type: 'authorization_code'
+      },
+      headers: {
+        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secrettoString('base64')))
+      },
+      json: true
+    };
+
+      request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+          let access_token = body.access_token,
+              refresh_token = body.refresh_token;
+          let options = {
+            url: 'https://api.spotify.com/v1/me',
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+          };
+
+          // use the access token to access the Spotify Web API
+          request.get(options, function(error, response, body) {
+            console.log(body);
+          });
+
+          // we can also pass the token to the browser to make requests from there
+          res.redirect('/#' +
+            querystring.stringify({
+              access_token: access_token,
+              refresh_token: refresh_token
+            }));
+        } else {
+          res.redirect('/#' +
+            querystring.stringify({
+              error: 'invalid_token'
+            }));
+        }
+      });
+    }
+  });
 
 app.get('/refresh_token', (req, res) => {
-
+  console.log('Inside /refresh_token route handler');
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
