@@ -31,19 +31,19 @@ let stateKey = 'spotify_auth_state';
 
 /***
  *  Config new Express app instance.
+ *  with Handlebars as template engine
  */
 const app = express();
-
-// view engine setupp
-// remplae 'views' with the following
-app.engine('handlebars', exphbs({
-  defaultLayout: 'main',
-  layoutsDir: path.join(__dirname, 'views/layouts'),
-  partialsDir: path.join(__dirname, 'views/partials'),
-}));
-
-app.set('views', path.join(__dirname, 'views'));
+const hbs = exphbs.create({
+    defaultLayout: 'main',
+    // these two may be the defaults
+    layoutsDir: path.join(__dirname, 'views/layouts'),
+    partialsDir: path.join(__dirname, 'views/partials'),
+  });
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
+app.enable('view cache'); // only when process.env.NODE_ENV === "production"
 
 // middleware
 app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
@@ -80,8 +80,28 @@ const redirect_uri = "http://localhost:3000/";
 const index = require('./routes/index');
 app.use('/', index);
 
-const login = require('./routes/login');
-app.use('/login', login);
+app.get('/login', function (req, res) {
+  console.log('Inside full login route handler');
+
+  let state = generateRandomString(16);
+  res.cookie(stateKey, state);
+  console.log('login set cookie stateKey');
+  console.log('Now redirecting to spotify Web API for authorization...');
+  // your application requests authorization
+  let scope = 'playlist-modify-private playlist-modify-public';
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
+    }));
+
+});
+
+// const login = require('./routes/login');
+// app.use('/login', login);
 
 const callback = require('./routes/callback');
 app.use('/callback', callback);

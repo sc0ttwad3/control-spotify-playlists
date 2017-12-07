@@ -12,4 +12,4 @@
 # TECHNOLOGY COLOPHON
 
     CSS3, HTML5
-    jQuery, Modernizr, Normalize.css, OpenType
+    Apache Server Configs, jQuery, Modernizr, Normalize.css

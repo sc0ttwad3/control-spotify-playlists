@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/', (req, res, next) => {
   console.log('Inside the homepage router function');
   console.log(req.sessionID);
-  res.render('index', { title: 'Express', session: req.sessionID });
+  res.render('index', { title: 'control-spotify-playlists', session: req.sessionID });
 });
 
 module.exports = router;
