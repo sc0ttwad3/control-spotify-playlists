@@ -80,15 +80,15 @@ const redirect_uri = "http://localhost:3000/";
 const index = require('./routes/index');
 app.use('/', index);
 
-app.get('/login', function (req, res) {
-  console.log('Inside full login route handler');
+app.get('/login', (req, res) => {
+  console.log('Inside /login route handler');
 
   let state = generateRandomString(16);
   res.cookie(stateKey, state);
   console.log('login set cookie stateKey');
   console.log('Now redirecting to spotify Web API for authorization...');
   // your application requests authorization
-  let scope = 'playlist-modify-private playlist-modify-public';
+  const scope = 'playlist-modify-private playlist-modify-public';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -97,7 +97,6 @@ app.get('/login', function (req, res) {
       redirect_uri: redirect_uri,
       state: state
     }));
-
 });
 
 // const login = require('./routes/login');
@@ -150,7 +149,7 @@ app.use((err, req, res, next) => {
   // render the error page
   res.status(err.status || 500);
   console.log(err);
-  res.render('error');
+  res.render('error', {error: err, message: "An error has occured"});
 });
 
 module.exports = app;
