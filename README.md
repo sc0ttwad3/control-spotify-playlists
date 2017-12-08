@@ -4,6 +4,10 @@
 
 Project based on express-scaffold that will enable a user to fully control their Spotify playlists
 
+#### Current ERRORs
+
+Invalid Redirect Uri?
+
 ## Setup
 
 Pour ☕️ then clone the repository
